@@ -1,7 +1,10 @@
 #include "d3dguix.h"
 
 #include <mutex>
+#include <queue>
 #include <random>
+
+#include "Vector.h"
 
 bool InitD3D() {
     /*
@@ -74,7 +77,7 @@ void CreateTransparentWindows(HWND GameWindowHandel, Draw DrawFunc) {
     SetLayeredWindowAttributes(WindowHandler, 0, RGB(0, 0, 0), LWA_COLORKEY);
     ShowWindow(WindowHandler, SW_SHOW);
     UpdateWindow(WindowHandler);
-    SetTimer(WindowHandler, 1, 1000, NULL);
+    SetTimer(WindowHandler, 1, 3000, NULL);
 
     InitD3D();
 }
@@ -154,7 +157,7 @@ void Text(float X, float Y, const char *Str, D3DCOLOR Color) {
     Font->DrawTextA(NULL, Str, -1, &Rect, DT_LEFT, Color);
 }
 
-void Box(float X, float Y, float W, float H, float Width, D3DCOLOR Color) {
+void BoxDraw(float X, float Y, float W, float H, float Width, D3DCOLOR Color) {
     D3DXVECTOR2 Vertex[5] = {{X, Y}, {X + W, Y}, {X + W, Y + H}, {X, Y + H}, {X, Y}};
     pLine->SetWidth(Width);
     pLine->Draw(Vertex, 5, Color);
@@ -177,41 +180,25 @@ D3DCOLOR bule = D3DCOLOR_XRGB(0, 0, 255);
 
 int x = 0;
 int revers = 0;
+std::mutex mutex_;
 
 void DrawFunc() {
-    if (revers) {
-        x++;
-    } else {
-        x--;
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (!vec.empty()) {
+        auto ve = vec.front();
+
+        DrawStart();
+        for (int i = 0; i < 20; i++) {
+            cout << ve.data[i][0] << "\t" << ve.data[i][1] << "\t" << ve.data[i][2] << "\t" << ve.data[i][3] << endl;
+            BoxDraw(ve.data[i][0], ve.data[i][1], ve.data[i][2], ve.data[i][3], hickness, red);
+        }
+        vec.erase(vec.begin());
+
+        DrawEnd();
     }
-    if (x >= Width) {
-        revers = 0;
-    }
-    if (x <= 0) {
-        revers = 1;
-    }
-    DrawStart();
-    Line(green, 20, 20, 66, 66, hickness);
-    Box(x, 100, 50, 100, hickness, red);
-    Text(200, 200, "777", bule);
-    DrawEnd();
 }
 
 HWND GameWindow = (HWND) 0x50A00;
-std::mutex mtx;
-
-int generateRandomNumbers(int lowerBound, int upperBound) {
-    // 创建随机数生成器
-    std::default_random_engine generator;
-    std::uniform_int_distribution<int> distribution(lowerBound, upperBound);
-
-    // 使用锁保护输出
-    lock_guard<std::mutex> lock(mtx);
-    int randomNum = distribution(generator);
-    std::cout << "Generated number: " << randomNum << std::endl;
-    // 可以在这里添加延时来模拟计算过程
-    return randomNum;
-}
 
 void DrawSomthing() {
 }
@@ -220,4 +207,9 @@ void Start() {
     GameWindow = FindWindow(LPCSTR("YodaoMainWndClass"), nullptr);
     CreateTransparentWindows(GameWindow, DrawFunc);
     MsgLoop();
+}
+
+void pushBox(Box_T box) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    vec.push_back(box);
 }
