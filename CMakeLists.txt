@@ -8,5 +8,22 @@ link_libraries("C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64
 link_libraries("C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64/d3dx9.lib")
 link_libraries("C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64/d3dx9d.lib")
 link_libraries("C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Lib/x64/dxgi.lib")
+link_libraries("./ghub_mouse.lib")
 include_directories("C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Include")
-add_executable(apex-mem-cheat Config.h Vector.h MemProtector.cpp Driver.cpp d3dguix.cpp main.cpp)
+add_executable(apex-mem-cheat
+        Config.h
+        Vector.h
+        MemProtector.cpp
+        Driver.cpp
+        d3dguix.cpp
+        Offset.h
+        mouse.h
+        mouse.c
+        AimBot.cpp
+        AimBot.h
+        main.cpp
+        Entity.cpp
+        Entity.h
+        Math.cpp
+        Math.h
+)

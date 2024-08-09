@@ -193,7 +193,6 @@ void DrawFunc() {
             BoxDraw(ve.data[i][0], ve.data[i][1], ve.data[i][2], ve.data[i][3], hickness, red);
         }
         vec.erase(vec.begin());
-
         DrawEnd();
     }
 }

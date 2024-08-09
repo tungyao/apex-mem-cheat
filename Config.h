@@ -2,8 +2,8 @@
 
 //MISC
 #define SMOOTH 2.f //1~20
-#define Max_Cheat_Distance 400.f
+#define Max_Cheat_Distance 200.f
 
 
 //XOR Keys
-#define STRING_XOR_KEY 0x6F
+#define STRING_XOR_KEY 0x22
